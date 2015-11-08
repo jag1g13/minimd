@@ -6,14 +6,17 @@
 #define MINIMD_MD_H
 
 #include <vector>
+#include <array>
+
+#include "integrator.h"
 
 class MD{
 private:
-    std::vector<double[3]> x_;
-    std::vector<double[3]> xm_;
-    std::vector<double[3]> v_;
-    std::vector<double[3]> f_;
-    double box_;
+    std::vector<std::array<double, 3>> x_;
+    std::vector<std::array<double, 3>> xm_;
+    std::vector<std::array<double, 3>> v_;
+    std::vector<std::array<double, 3>> f_;
+    double box_ = 5;
     int natoms_;
     double en_;
     double temp_= 300.;
@@ -25,21 +28,22 @@ private:
     double cutoff_ = 10.;
     double ecut_;
 
-    double distSqr(const int i, const int j);
+    std::vector<Integrator> integrators;
 
 public:
     MD(){};
     ~MD(){};
 
-    void createAtoms(const int natoms);
-
-    void setBox(const double box);
+    void createAtoms(const int natoms, const double temp);
 
     void lj();
 
     void integrate();
 
     double temp() const;
+
+    void print() const;
+    double distSqr(const int i, const int j) const;
 };
 
 #endif //MINIMD_MD_H
