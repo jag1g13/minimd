@@ -7,19 +7,22 @@ using std::cout;
 using std::endl;
 
 int main() {
-    const int nsteps = 1e6;
+    const int nsteps = 1e5;
     cout << "Hello, World!" << endl;
     const std::clock_t start = std::clock();
     MD dynamics;
-    dynamics.createAtoms(2,0);
-    dynamics.setupBonded();
+    dynamics.createAtoms(10,0);
+    dynamics.setup();
     for(int i=0; i<nsteps; i++){
-        if(i%1000 == 0){
-            dynamics.print();
-            cout << dynamics.distSqr(0, 1) << endl;
-        }
+//        if(i%1 == 0){
+//            dynamics.print(1);
+//            cout << dynamics.distSqr(0, 1) << endl;
+//        }
         dynamics.calcForces();
         dynamics.integrate();
+        dynamics.PBC();
+
+        if(i%10 == 0) dynamics.output();
     }
     dynamics.print();
     cout << dynamics.distSqr(0, 1) << endl;

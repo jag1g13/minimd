@@ -10,8 +10,11 @@
 #include <memory>
 
 #include "globals.h"
+
 #include "integrator.h"
 #include "bond-length.h"
+
+#include "trj_output.h"
 
 class MD{
 private:
@@ -19,8 +22,8 @@ private:
     MyTypes::vecList xm_;
     MyTypes::vecList v_;
     MyTypes::vecList f_;
-    double box_ = 5;
-    int natoms_;
+    double box_ = 10;
+    int natoms_, step_ = 0;
     double en_;
     double temp_= 300.;
     double delt_ = 0.01;
@@ -31,11 +34,18 @@ private:
     double cutoff_ = 10.;
     double ecut_;
 
-    std::vector<std::unique_ptr<Integrator>> integrators;
+    std::vector<std::unique_ptr<Integrator>> integrators_;
     std::vector<std::unique_ptr<BondLength>> bondLengths_;
+
+    std::vector<std::unique_ptr<TrjOutput>> trjOutputs_;
+
+    void createVelocity(const double temp);
 
     void bonded();
     void lj();
+
+    void removeCOMM();
+
 
 public:
     MD(){};
@@ -45,14 +55,22 @@ public:
 
     void calcForces();
 
-    void setupBonded();
+    void setup();
 
     void integrate();
+    void PBC();
+
+    void output() const;
 
     double temp() const;
 
-    void print() const;
+    void print(int natoms=-1) const;
     double distSqr(const int i, const int j) const;
 };
+
+template<typename T, typename... Args>
+std::unique_ptr<T> make_unique(Args&&... args){
+    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
 
 #endif //MINIMD_MD_H
