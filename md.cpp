@@ -9,6 +9,9 @@
 #include <XTCOutput.h>
 
 #include "bond-length-harmonic.h"
+
+#include "nonbond-lj.h"
+
 #include "integrator-leapfrog.h"
 #include "integrator-verlet.h"
 
@@ -87,35 +90,8 @@ void MD::createVelocity(const double temp){
 }
 
 void MD::calcForces(){
-    lj();
 //    bonded();
-}
-
-void MD::lj(){
-//    double cut2i = 1. / (cutoff_*cutoff_);
-//    double cut6i = cut2i*cut2i*cut2i;
-//    ecut_ = 4 * cut6i * (cut6i - 1);
-
-    for(int i=0; i<natoms_; i++){
-        f_[i][0] = 0.;
-        f_[i][1] = 0.;
-        f_[i][2] = 0.;
-    }
-
-    for(int i=0; i < natoms_; i++){
-        for(int j=i+1; j < natoms_; j++){
-            double r2 = distSqr(i, j);
-            double r2i = 1. / r2;
-            double r6i = r2i*r2i*r2i * std::pow(sigma_, 6);
-            double ff = 48 * epsilon_ * r2i * r6i * (r6i - 0.5);
-            f_[i][0] += ff * (x_[i][0]-x_[j][0]);
-            f_[i][1] += ff * (x_[i][1]-x_[j][1]);
-            f_[i][2] += ff * (x_[i][2]-x_[j][2]);
-            f_[j][0] -= ff * (x_[i][0]-x_[j][0]);
-            f_[j][1] -= ff * (x_[i][1]-x_[j][1]);
-            f_[j][2] -= ff * (x_[i][2]-x_[j][2]);
-        }
-    }
+    for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_) nonbond->calcForces(x_, f_);
 }
 
 void MD::bonded(){
@@ -124,16 +100,13 @@ void MD::bonded(){
 
 void MD::setup(){
     bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
-//    bondLengths_.push_back(make_unique<BondLengthHarmonic>(1, 2, 1, 10));
+
+    nonbonds_.push_back(make_unique<NonbondLJ>());
 
 //    integrators_.push_back(make_unique<IntegratorVerlet>());
     integrators_.push_back(make_unique<IntegratorLeapfrog>());
 
     trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
-}
-
-void MD::removeCOMM(){
-
 }
 
 void MD::integrate(){
@@ -144,18 +117,9 @@ void MD::integrate(){
 
 void MD::PBC(){
     for(int i=0; i<natoms_; i++){
-        for(int j=0; j<3; j++){
-            x_[i][j] -= box_ * std::floor(x_[i][j]/box_);
-
-//            if(x_[i][j] < 0){
-//                x_[i][j] += box_;
-//                xm_[i][j] += box_;
-//            }
-//            if(x_[i][j] >= box_){
-//                x_[i][j] -= box_;
-//                xm_[i][j] -= box_;
-//            }
-        }
+        x_[i][0] -= box_ * std::floor(x_[i][0]/box_);
+        x_[i][1] -= box_ * std::floor(x_[i][1]/box_);
+        x_[i][2] -= box_ * std::floor(x_[i][2]/box_);
     }
 }
 

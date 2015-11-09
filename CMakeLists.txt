@@ -23,6 +23,7 @@ set(SOURCE_FILES
         src/XTCOutput.cpp
         src/integrator-leapfrog.cpp
         src/integrator-verlet.cpp
+        src/nonbond-lj.cpp
         src/bond-length-harmonic.cpp)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")

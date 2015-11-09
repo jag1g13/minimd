@@ -13,6 +13,7 @@
 
 #include "integrator.h"
 #include "bond-length.h"
+#include "nonbond.h"
 
 #include "trj_output.h"
 
@@ -36,15 +37,13 @@ private:
 
     std::vector<std::unique_ptr<Integrator>> integrators_;
     std::vector<std::unique_ptr<BondLength>> bondLengths_;
+    std::vector<std::unique_ptr<Nonbond>> nonbonds_;
 
     std::vector<std::unique_ptr<TrjOutput>> trjOutputs_;
 
     void createVelocity(const double temp);
 
     void bonded();
-    void lj();
-
-    void removeCOMM();
 
 
 public:
