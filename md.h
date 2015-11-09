@@ -7,15 +7,18 @@
 
 #include <vector>
 #include <array>
+#include <memory>
 
+#include "globals.h"
 #include "integrator.h"
+#include "bond-length.h"
 
 class MD{
 private:
-    std::vector<std::array<double, 3>> x_;
-    std::vector<std::array<double, 3>> xm_;
-    std::vector<std::array<double, 3>> v_;
-    std::vector<std::array<double, 3>> f_;
+    MyTypes::vecList x_;
+    MyTypes::vecList xm_;
+    MyTypes::vecList v_;
+    MyTypes::vecList f_;
     double box_ = 5;
     int natoms_;
     double en_;
@@ -28,7 +31,11 @@ private:
     double cutoff_ = 10.;
     double ecut_;
 
-    std::vector<Integrator> integrators;
+    std::vector<std::unique_ptr<Integrator>> integrators;
+    std::vector<std::unique_ptr<BondLength>> bondLengths_;
+
+    void bonded();
+    void lj();
 
 public:
     MD(){};
@@ -36,7 +43,9 @@ public:
 
     void createAtoms(const int natoms, const double temp);
 
-    void lj();
+    void calcForces();
+
+    void setupBonded();
 
     void integrate();
 

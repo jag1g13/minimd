@@ -12,12 +12,13 @@ int main() {
     const std::clock_t start = std::clock();
     MD dynamics;
     dynamics.createAtoms(2,0);
+    dynamics.setupBonded();
     for(int i=0; i<nsteps; i++){
         if(i%1000 == 0){
             dynamics.print();
             cout << dynamics.distSqr(0, 1) << endl;
         }
-        dynamics.lj();
+        dynamics.calcForces();
         dynamics.integrate();
     }
     dynamics.print();

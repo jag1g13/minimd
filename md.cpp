@@ -7,6 +7,8 @@
 #include <cmath>
 #include <random>
 
+#include "bond-length-harmonic.h"
+
 void MD::createAtoms(const int natoms, const double temp){
     natoms_ = natoms;
     temp_ = temp;
@@ -15,8 +17,9 @@ void MD::createAtoms(const int natoms, const double temp){
     v_.resize(natoms_);
     f_.resize(natoms_);
 
-    std::random_device rd;
-    std::default_random_engine dre(rd());
+//    std::random_device rd;
+//    std::default_random_engine dre(rd());
+    std::default_random_engine dre(0);
     std::uniform_real_distribution<double> rand(0, 1);
 
     double sumv[3] = {0., 0., 0.}, sumv2[3] = {0., 0., 0.};
@@ -53,6 +56,11 @@ void MD::createAtoms(const int natoms, const double temp){
     }
 }
 
+void MD::calcForces(){
+    lj();
+    bonded();
+}
+
 void MD::lj(){
 //    double cut2i = 1. / (cutoff_*cutoff_);
 //    double cut6i = cut2i*cut2i*cut2i;
@@ -78,6 +86,16 @@ void MD::lj(){
             f_[j][2] -= ff * (x_[i][2]-x_[j][2]);
         }
     }
+}
+
+void MD::bonded(){
+    for(const std::unique_ptr<BondLength> &bond : bondLengths_) bond->calcForces(x_, f_);
+}
+
+void MD::setupBonded(){
+//    std::unique_ptr<BondLengthHarmonic> b = new BondLengthHarmonic(0,1,1,1);
+//    bondLengths_.push_back(b);
+    bondLengths_.push_back(std::make_unique<BondLengthHarmonic>(0, 1, 1, 1));
 }
 
 void MD::integrate(){
