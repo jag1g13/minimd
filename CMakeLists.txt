@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(minimd)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Og")
 
 # Find libxdrfile - compile it if not present - replaces GROMACS library
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -24,6 +25,7 @@ set(SOURCE_FILES
         src/XTCOutput.cpp
         src/integrator-leapfrog.cpp
         src/integrator-verlet.cpp
+        src/thermostat-vrescale.cpp
         src/nonbond-lj.cpp
         src/bond-length-harmonic.cpp)
 

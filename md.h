@@ -12,6 +12,8 @@
 #include "globals.h"
 
 #include "integrator.h"
+#include "thermostat.h"
+
 #include "bond-length.h"
 #include "nonbond.h"
 
@@ -35,7 +37,11 @@ private:
     double cutoff_ = 10.;
     double ecut_;
 
+    double energy_;
+
     std::vector<std::unique_ptr<Integrator>> integrators_;
+    std::vector<std::unique_ptr<Thermostat>> thermostats_;
+
     std::vector<std::unique_ptr<BondLength>> bondLengths_;
     std::vector<std::unique_ptr<Nonbond>> nonbonds_;
 
@@ -65,6 +71,8 @@ public:
 
     void print(int natoms=-1) const;
     double distSqr(const int i, const int j) const;
+
+    double energy() const {return energy_;};
 };
 
 template<typename T, typename... Args>

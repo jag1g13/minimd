@@ -9,9 +9,15 @@
 
 class Nonbond{
 protected:
-    Nonbond(){};
+    const int natoms_;
+    const double box_;
+
+    Nonbond(const int natoms, const double box) : natoms_(natoms), box_(box){};
+
     double distSqr(const MyTypes::vec &a, const MyTypes::vec &b) const{
-        return abs(a - b);
+        MyTypes::vec del = a - b;
+        del %= box_;
+        return abs(del);
 //        double d[3];
 //        d[0] = a.x - b.x;
 //        d[1] = a.y - b.y;

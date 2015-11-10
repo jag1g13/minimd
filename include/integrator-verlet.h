@@ -9,7 +9,7 @@
 
 class IntegratorVerlet : public Integrator{
 public:
-    void integrate(const int natoms, const double delt,
+    double integrate(const int natoms, const double delt,
                    MyTypes::vecList &x, MyTypes::vecList &xm,
                    MyTypes::vecList &v, const MyTypes::vecList &f) const;
 };

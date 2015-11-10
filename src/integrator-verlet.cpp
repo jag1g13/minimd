@@ -4,7 +4,7 @@
 
 #include "integrator-verlet.h"
 
-void IntegratorVerlet::integrate(const int natoms, const double delt,
+double IntegratorVerlet::integrate(const int natoms, const double delt,
                                    MyTypes::vecList &x, MyTypes::vecList &xm,
                                    MyTypes::vecList &v, const MyTypes::vecList &f) const{
     for(int i=0; i<natoms; i++){

@@ -12,7 +12,7 @@ protected:
     const double equilibrium_, forceConstant_;
     Bond(const double eqm, const double fc) : equilibrium_(eqm), forceConstant_(fc){};
 public:
-    virtual void calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const = 0;
+    virtual double calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const = 0;
 
 //    Bond(const Bond &other) = delete;
 //    Bond &operator=(const Bond &other) = delete;

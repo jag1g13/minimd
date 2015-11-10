@@ -9,10 +9,12 @@
 
 class NonbondLJ : public Nonbond{
 protected:
-    const int natoms_ = 10;
     const double sigma_ = 1.;
     const double epsilon_ = 1.;
+
 public:
+    NonbondLJ(const int natoms, const double box) : Nonbond(natoms, box){};
+
     double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f);
 };
 
