@@ -41,9 +41,12 @@ int XTCOutput::writeFrame(const MyTypes::vecList &frame, const int num, const do
     }
 
     for(int i=0; i<natoms_; i++){
-        x_[i][0] = float(frame[i][0]);
-        x_[i][1] = float(frame[i][1]);
-        x_[i][2] = float(frame[i][2]);
+        x_[i][0] = float(frame[i].x);
+        x_[i][1] = float(frame[i].y);
+        x_[i][2] = float(frame[i].z);
+//        x_[i][0] = float(frame[i][0]);
+//        x_[i][1] = float(frame[i][1]);
+//        x_[i][2] = float(frame[i][2]);
     }
 
     return exdrOK == write_xtc(file_, natoms_, num,
