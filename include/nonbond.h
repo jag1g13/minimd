@@ -11,11 +11,12 @@ class Nonbond{
 protected:
     Nonbond(){};
     double distSqr(const MyTypes::vec &a, const MyTypes::vec &b) const{
-        double d[3];
-        d[0] = a[0] - b[0];
-        d[1] = a[1] - b[1];
-        d[2] = a[2] - b[2];
-        return d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
+        return abs(a - b);
+//        double d[3];
+//        d[0] = a.x - b.x;
+//        d[1] = a.y - b.y;
+//        d[2] = a.z - b.z;
+//        return d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
     };
 public:
     virtual double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f) = 0;

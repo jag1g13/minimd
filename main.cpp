@@ -7,6 +7,9 @@ using std::cout;
 using std::endl;
 
 int main() {
+    cout << std::boolalpha;
+    cout << std::is_pod<vec3d>::value << endl;
+
     const int nsteps = 1e5;
     cout << "Hello, World!" << endl;
     const std::clock_t start = std::clock();

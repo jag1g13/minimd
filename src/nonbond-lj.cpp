@@ -12,9 +12,10 @@ double NonbondLJ::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f){
 //    ecut_ = 4 * cut6i * (cut6i - 1);
 
     for(int i = 0; i < natoms_; i++){
-        f[i][0] = 0.;
-        f[i][1] = 0.;
-        f[i][2] = 0.;
+        f[i] = {0., 0., 0.};
+//        f[i][0] = 0.;
+//        f[i][1] = 0.;
+//        f[i][2] = 0.;
     }
 
     for(int i = 0; i < natoms_; i++){
@@ -23,12 +24,14 @@ double NonbondLJ::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f){
             double r2i = 1. / r2;
             double r6i = r2i * r2i * r2i * std::pow(sigma_, 6);
             double ff = 48 * epsilon_ * r2i * r6i * (r6i - 0.5);
-            f[i][0] += ff * (x[i][0] - x[j][0]);
-            f[i][1] += ff * (x[i][1] - x[j][1]);
-            f[i][2] += ff * (x[i][2] - x[j][2]);
-            f[j][0] -= ff * (x[i][0] - x[j][0]);
-            f[j][1] -= ff * (x[i][1] - x[j][1]);
-            f[j][2] -= ff * (x[i][2] - x[j][2]);
+            f[i] += (x[i] - x[j]) * ff;
+//            f[i][0] += ff * (x[i][0] - x[j][0]);
+//            f[i][1] += ff * (x[i][1] - x[j][1]);
+//            f[i][2] += ff * (x[i][2] - x[j][2]);
+            f[j] -= (x[i] - x[j]) * ff;
+//            f[j][0] -= ff * (x[i][0] - x[j][0]);
+//            f[j][1] -= ff * (x[i][1] - x[j][1]);
+//            f[j][2] -= ff * (x[i][2] - x[j][2]);
         }
     }
 

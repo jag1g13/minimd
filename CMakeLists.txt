@@ -20,6 +20,7 @@ endif()
 set(SOURCE_FILES
         main.cpp
         md.cpp
+        src/vec3d.cpp
         src/XTCOutput.cpp
         src/integrator-leapfrog.cpp
         src/integrator-verlet.cpp
