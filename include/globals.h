@@ -24,6 +24,9 @@ namespace MyEnums{
 
 vec3d operator+(const vec3d &a, const vec3d &b);
 vec3d operator-(const vec3d &a, const vec3d &b);
+vec3d operator*(const vec3d &a, const vec3d &b);
+vec3d operator/(const vec3d &a, const vec3d &b);
+
 vec3d &operator+=(vec3d &vec, const vec3d &other);
 vec3d &operator-=(vec3d &vec, const vec3d &other);
 
@@ -31,6 +34,7 @@ vec3d &operator+=(vec3d &vec, const double b);
 vec3d &operator-=(vec3d &vec, const double b);
 vec3d &operator*=(vec3d &vec, const double b);
 vec3d &operator/=(vec3d &vec, const double b);
+vec3d &operator%=(vec3d &vec, const double b);
 
 vec3d operator+(const vec3d &a, const double b);
 vec3d operator-(const vec3d &a, const double b);

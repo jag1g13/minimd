@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-void BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const{
+double BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const{
     MyTypes::vec del = x[atoms_[0]] - x[atoms_[1]];
 //    del[0] = x[atoms_[0]][0] - x[atoms_[1]][0];
 //    del[1] = x[atoms_[0]][1] - x[atoms_[1]][1];
@@ -32,4 +32,6 @@ void BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) co
 //    f[atoms_[1]][0] -= del[0] * fbond;
 //    f[atoms_[1]][1] -= del[1] * fbond;
 //    f[atoms_[1]][2] -= del[2] * fbond;
+
+    return 0.;
 }

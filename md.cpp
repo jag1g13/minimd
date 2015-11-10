@@ -15,6 +15,8 @@
 #include "integrator-leapfrog.h"
 #include "integrator-verlet.h"
 
+#include "thermostat-vrescale.h"
+
 #include "XTCOutput.h"
 
 void MD::createAtoms(const int natoms, const double temp){
@@ -100,28 +102,35 @@ void MD::createVelocity(const double temp){
 }
 
 void MD::calcForces(){
+    energy_ = 0.;
 //    bonded();
-    for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_) nonbond->calcForces(x_, f_);
+    for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_)
+        energy_ += nonbond->calcForces(x_, f_);
 }
 
 void MD::bonded(){
-    for(const std::unique_ptr<BondLength> &bond : bondLengths_) bond->calcForces(x_, f_);
+    for(const std::unique_ptr<BondLength> &bond : bondLengths_)
+        energy_ += bond->calcForces(x_, f_);
 }
 
 void MD::setup(){
     bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
 
-    nonbonds_.push_back(make_unique<NonbondLJ>());
+    nonbonds_.push_back(make_unique<NonbondLJ>(natoms_, box_));
 
 //    integrators_.push_back(make_unique<IntegratorVerlet>());
     integrators_.push_back(make_unique<IntegratorLeapfrog>());
+
+    thermostats_.push_back(make_unique<ThermostatVrescale>(1, 1));
 
     trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
 }
 
 void MD::integrate(){
     for(const std::unique_ptr<Integrator> &intg : integrators_)
-        intg->integrate(natoms_, delt_, x_, xm_, v_, f_);
+        energy_ += intg->integrate(natoms_, delt_, x_, xm_, v_, f_);
+    for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
+        thermo->thermo(v_);
     step_++;
 }
 

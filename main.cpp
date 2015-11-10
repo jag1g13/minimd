@@ -14,18 +14,17 @@ int main() {
     cout << "Hello, World!" << endl;
     const std::clock_t start = std::clock();
     MD dynamics;
-    dynamics.createAtoms(10,0);
+    dynamics.createAtoms(50,0);
     dynamics.setup();
     for(int i=0; i<nsteps; i++){
-//        if(i%1 == 0){
-//            dynamics.print(1);
-//            cout << dynamics.distSqr(0, 1) << endl;
-//        }
         dynamics.calcForces();
         dynamics.integrate();
         dynamics.PBC();
 
-        if(i%10 == 0) dynamics.output();
+        if(i%10 == 0){
+            dynamics.output();
+//            cout << dynamics.energy() << endl;
+        }
     }
     dynamics.print();
     cout << dynamics.distSqr(0, 1) << endl;

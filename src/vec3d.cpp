@@ -17,9 +17,14 @@
 vec3d operator+(const vec3d &a, const vec3d &b){
     return {a.x+b.x, a.y+b.y, a.z+b.z};
 }
-
 vec3d operator-(const vec3d &a, const vec3d &b){
     return {a.x-b.x, a.y-b.y, a.z-b.z};
+}
+vec3d operator*(const vec3d &a, const vec3d &b){
+    return {a.x*b.x, a.y*b.y, a.z*b.z};
+}
+vec3d operator/(const vec3d &a, const vec3d &b){
+    return {a.x/b.x, a.y/b.y, a.z/b.z};
 }
 
 vec3d &operator+=(vec3d &vec, const vec3d &other){
@@ -58,6 +63,12 @@ vec3d &operator/=(vec3d &vec, const double b){
     vec.x /= b;
     vec.y /= b;
     vec.z /= b;
+    return vec;
+}
+vec3d &operator%=(vec3d &vec, const double b){
+    vec.x -= b * std::rint(vec.x / b);
+    vec.y -= b * std::rint(vec.y / b);
+    vec.z -= b * std::rint(vec.z / b);
     return vec;
 }
 
