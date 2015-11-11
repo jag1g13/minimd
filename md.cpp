@@ -7,19 +7,8 @@
 #include <cmath>
 #include <random>
 
-#include "bond-length-harmonic.h"
-
-#include "nonbond-lj.h"
-
-#include "integrator-leapfrog.h"
-#include "integrator-verlet.h"
-
-#include "thermostat-vrescale.h"
-
-#include "XTCOutput.h"
-#include "LammpsTrjOutput.h"
-
-void MD::createAtoms(const int natoms, const double temp){
+void MD::createAtoms(const int natoms, const double temp,
+                     const double bounda, const double boundb){
     natoms_ = natoms;
     temp_ = temp;
 
@@ -40,20 +29,19 @@ void MD::createAtoms(const int natoms, const double temp){
 
     for(int i=0; i < natoms_; i++){
         x_[i] = {rand(dre), rand(dre), rand(dre)};
-        x_[i] *= box_;
+        x_[i] *= (boundb - bounda);
+        x_[i] += bounda;
     }
 
     if(temp != 0.){
         createVelocity(temp);
     }else{
-        for(int i=0; i < natoms_; i++){
-            v_[i] = {0., 0., 0.};
-        }
+        for(int i=0; i < natoms_; i++) v_[i] = {0., 0., 0.};
     }
 
-    for(int i=0; i < natoms_; i++){
-        xm_[i] = x_[i] - (v_[i] * delt_);
-    }
+    for(int i=0; i < natoms_; i++) xm_[i] = x_[i] - (v_[i] * delt_);
+
+    if(trjOutputs_.size() > 1) trjOutputs_[1]->writeFrame(x_, 0, box_);
 }
 
 void MD::createVelocity(const double temp){
@@ -107,23 +95,6 @@ void MD::step(){
     for(int i=0; i<natoms_; i++) x_[i] -= std::floor(x_[i] / box_) * box_;
 
     step_++;
-}
-
-void MD::setup(){
-//    bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
-
-    nonbonds_.push_back(make_unique<NonbondLJ>(natoms_, box_, 3));
-
-//    integrators_.push_back(make_unique<IntegratorVerlet>(natoms_, delt_));
-    integrators_.push_back(make_unique<IntegratorLeapfrog>(natoms_, delt_));
-    integrators_.push_back(make_unique<IntegratorLeapfrog>(
-            natoms_, delt_, MyEnums::IntegratorType::ROTATIONAL));
-
-    thermostats_.push_back(make_unique<ThermostatVrescale>(1, 1));
-
-    trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
-    trjOutputs_.push_back(make_unique<LammpsTrjOutput>(natoms_, "out.trj"));
-    trjOutputs_[1]->writeFrame(x_, step_, box_);
 }
 
 void MD::print(int natoms) const{
