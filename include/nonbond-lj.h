@@ -13,7 +13,8 @@ protected:
     const double epsilon_ = 1.;
 
 public:
-    NonbondLJ(const int natoms, const double box) : Nonbond(natoms, box){};
+    NonbondLJ(const int natoms, const double box, const double cut=-1.)
+            : Nonbond(natoms, box, cut){};
 
     double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f);
 };

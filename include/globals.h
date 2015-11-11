@@ -19,6 +19,7 @@ namespace MyTypes{
 
 namespace MyEnums{
     enum class BondType{BOND=2, ANGLE=3, DIHEDRAL=4};
+    enum class IntegratorType{CARTESIAN, ROTATIONAL};
 }
 
 vec3d operator+(const vec3d &a, const vec3d &b);

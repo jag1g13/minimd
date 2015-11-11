@@ -9,9 +9,11 @@
 
 class IntegratorLeapfrog : public Integrator{
 public:
-    double integrate(const int natoms, const double delt,
-                   MyTypes::vecList &x, MyTypes::vecList &xm,
-                   MyTypes::vecList &v, const MyTypes::vecList &f) const;
+    IntegratorLeapfrog(const int natoms, const double delt,
+                       const MyEnums::IntegratorType type=MyEnums::IntegratorType::CARTESIAN)
+            : Integrator(natoms, delt, type){}
+    double integrate(MyTypes::vecList &x, MyTypes::vecList &xm,
+                     MyTypes::vecList &v, const MyTypes::vecList &f) const;
 };
 
 #endif //MINIMD_INTEGRATOR_LEAPFROG_H
