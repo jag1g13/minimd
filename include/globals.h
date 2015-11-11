@@ -9,7 +9,7 @@
 #include <vector>
 
 typedef struct vec3d{
-    double x, y, z;
+    double x, y, z, m;
 } vec3d;
 
 namespace MyTypes{

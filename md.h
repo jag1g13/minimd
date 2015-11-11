@@ -44,21 +44,15 @@ private:
 
     void createVelocity(const double temp);
 
-    void bonded();
-
-
 public:
     MD(){};
     ~MD(){};
 
     void createAtoms(const int natoms, const double temp);
 
-    void calcForces();
-
     void setup();
 
-    void integrate();
-    void PBC();
+    void step();
 
     void output() const;
 

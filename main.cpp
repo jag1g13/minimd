@@ -7,22 +7,20 @@ using std::cout;
 using std::endl;
 
 int main() {
-    cout << std::boolalpha;
-    cout << std::is_pod<vec3d>::value << endl;
+    const std::clock_t start = std::clock();
 
     const int nsteps = 1e5;
-    cout << "Hello, World!" << endl;
-    const std::clock_t start = std::clock();
+    const int natoms = 100;
     MD dynamics;
-    dynamics.createAtoms(50,0);
+    dynamics.createAtoms(natoms,0);
     dynamics.setup();
     for(int i=0; i<nsteps; i++){
-        dynamics.calcForces();
-        dynamics.integrate();
-        dynamics.PBC();
+        dynamics.step();
 
         if(i%10 == 0) dynamics.output();
+        if(i%1000 == 0) cout << (100*i)/nsteps << "%\r" << std::flush;
     }
+    cout << endl;
     dynamics.print();
 
     const double time = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
