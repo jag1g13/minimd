@@ -34,8 +34,11 @@ vec3d &operator-=(vec3d &vec, const vec3d &other){
 }
 
 vec3d &operator+=(vec3d &vec, const double b){
+#pragma omp atomic update
     vec.x += b;
+#pragma omp atomic update
     vec.y += b;
+#pragma omp atomic update
     vec.z += b;
     return vec;
 }
