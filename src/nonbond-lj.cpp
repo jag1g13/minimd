@@ -14,9 +14,6 @@ double NonbondLJ::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f){
 
     for(int i = 0; i < natoms_; i++){
         f[i] = {0., 0., 0.};
-//        f[i][0] = 0.;
-//        f[i][1] = 0.;
-//        f[i][2] = 0.;
     }
 
     for(int i = 0; i < natoms_; i++){
@@ -28,13 +25,7 @@ double NonbondLJ::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f){
             MyTypes::vec del = x[i] - x[j];
             del %= box_;
             f[i] += del * ff;
-//            f[i][0] += ff * (x[i][0] - x[j][0]);
-//            f[i][1] += ff * (x[i][1] - x[j][1]);
-//            f[i][2] += ff * (x[i][2] - x[j][2]);
             f[j] -= del * ff;
-//            f[j][0] -= ff * (x[i][0] - x[j][0]);
-//            f[j][1] -= ff * (x[i][1] - x[j][1]);
-//            f[j][2] -= ff * (x[i][2] - x[j][2]);
             en += 4 * r6i * (r6i - 1);
         }
     }

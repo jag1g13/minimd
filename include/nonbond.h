@@ -18,12 +18,8 @@ protected:
         MyTypes::vec del = a - b;
         del %= box_;
         return abs(del);
-//        double d[3];
-//        d[0] = a.x - b.x;
-//        d[1] = a.y - b.y;
-//        d[2] = a.z - b.z;
-//        return d[0] * d[0] + d[1] * d[1] + d[2] * d[2];
     };
+
 public:
     virtual double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f) = 0;
 };

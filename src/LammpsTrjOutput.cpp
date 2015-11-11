@@ -45,9 +45,6 @@ int LammpsTrjOutput::writeFrame(const MyTypes::vecList &frame, const int num, co
                 10*frame[i].x, 10*frame[i].y, 10*frame[i].z,
                 0., 0., 0.,
                 1., 1.);
-//                10*atom.coords[0]-box[0], 10*atom.coords[1]-box[1], 10*atom.coords[2]-box[2],
-//                10*atom.dipole[0], 10*atom.dipole[1], 10*atom.dipole[2],
-//                atom.mass, 2.7f);
     }
 
     return 0;
