@@ -31,7 +31,7 @@ private:
     double temp_= 300.;
     double delt_ = 0.01;
 
-    double sigma_ = 1.;
+    double sigma_ = 5.;
     double epsilon_ = 1.;
     double mass_ = 1.;
     double cutoff_ = 10.;

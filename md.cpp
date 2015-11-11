@@ -6,7 +6,6 @@
 
 #include <cmath>
 #include <random>
-#include <XTCOutput.h>
 
 #include "bond-length-harmonic.h"
 
@@ -18,6 +17,7 @@
 #include "thermostat-vrescale.h"
 
 #include "XTCOutput.h"
+#include "LammpsTrjOutput.h"
 
 void MD::createAtoms(const int natoms, const double temp){
     natoms_ = natoms;
@@ -114,7 +114,7 @@ void MD::bonded(){
 }
 
 void MD::setup(){
-    bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
+//    bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
 
     nonbonds_.push_back(make_unique<NonbondLJ>(natoms_, box_));
 
@@ -123,7 +123,8 @@ void MD::setup(){
 
     thermostats_.push_back(make_unique<ThermostatVrescale>(1, 1));
 
-    trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
+//    trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
+    trjOutputs_.push_back(make_unique<LammpsTrjOutput>(natoms_, "out.trj"));
 }
 
 void MD::integrate(){

@@ -27,8 +27,6 @@ public:
 
     /** \brief Empty destructor to be overwritten. */
     virtual ~TrjOutput(){};
-
-    friend class Frame;
 };
 
 inline bool file_exists(const std::string name){
