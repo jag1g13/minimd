@@ -38,7 +38,7 @@ private:
 
     double mass_ = 1.;
 
-    double energy_;
+    double energy_, pe_, ke_;
 
     void createVelocity(const double temp);
 
@@ -62,6 +62,10 @@ public:
     void output() const;
 
     void print(int natoms=-1) const;
+
+    double energy() const{return energy_;};
+    double pe() const{return pe_;};
+    double ke() const{return ke_;};
 };
 
 template<typename T, typename... Args>

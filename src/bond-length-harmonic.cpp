@@ -8,6 +8,7 @@
 
 double BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const{
     MyTypes::vec del = x[atoms_[0]] - x[atoms_[1]];
+//    del %= box_;
 
     const double r = abs(del);
     const double dr = r - equilibrium_;

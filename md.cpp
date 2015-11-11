@@ -68,32 +68,63 @@ void MD::createVelocity(const double temp){
 }
 
 void MD::step(){
-    energy_ = 0.;
+    energy_ = 0.; pe_ = 0.; ke_ = 0.;
     for(MyTypes::vec &each : f_) each = {0., 0., 0.};
 
     // Calculate forces
     for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_)
-        energy_ += nonbond->calcForces(x_, f_);
+        pe_ += nonbond->calcForces(x_, f_);
     for(const std::unique_ptr<BondLength> &bond : bondLengths_)
-        energy_ += bond->calcForces(x_, f_);
+        pe_ += bond->calcForces(x_, f_);
 
     // Integrate forces
     for(const std::unique_ptr<Integrator> &intg : integrators_){
         switch(intg->type_){
             case MyEnums::IntegratorType::CARTESIAN:
-                energy_ += intg->integrate(x_, xm_, v_, f_);
+                ke_ += intg->integrate(x_, xm_, v_, f_);
             case MyEnums::IntegratorType::ROTATIONAL:
-                energy_ += intg->integrate(xr_, xmr_, vr_, fr_);
+                ke_ += intg->integrate(xr_, xmr_, vr_, fr_);
         }
     }
+
+//    printf("%8i %8.3f %8.3f %8.3f\n", step_, f_[0].x, f_[0].y, f_[0].z);
 
     // Do thermo/baro-stats
     for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
         thermo->thermo(v_);
 
     // Correct for PBC
-    for(int i=0; i<natoms_; i++) x_[i] -= std::floor(x_[i] / box_) * box_;
+    for(int i=0; i<natoms_; i++){
+//        x_[i] -= std::floor(x_[i] / box_) * box_;
+        while(x_[i].x < 0){
+            x_[i].x += box_;
+            xm_[i].x += box_;
+        }
+        while(x_[i].x >= box_){
+            x_[i].x -= box_;
+            xm_[i].x -= box_;
+        }
 
+        while(x_[i].y < 0){
+            x_[i].y += box_;
+            xm_[i].y += box_;
+        }
+        while(x_[i].y >= box_){
+            x_[i].y -= box_;
+            xm_[i].y -= box_;
+        }
+
+        while(x_[i].z < 0){
+            x_[i].z += box_;
+            xm_[i].z += box_;
+        }
+        while(x_[i].z >= box_){
+            x_[i].z -= box_;
+            xm_[i].z -= box_;
+        }
+    }
+
+    energy_ = pe_ + ke_;
     step_++;
 }
 
