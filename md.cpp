@@ -73,16 +73,23 @@ void MD::createVelocity(const double temp){
     }
 }
 
-void MD::calcForces(){
+void MD::step(){
     energy_ = 0.;
-//    bonded();
+    for(MyTypes::vec &each : f_) each = {0., 0., 0.};
+
     for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_)
         energy_ += nonbond->calcForces(x_, f_);
-}
-
-void MD::bonded(){
     for(const std::unique_ptr<BondLength> &bond : bondLengths_)
         energy_ += bond->calcForces(x_, f_);
+
+    for(const std::unique_ptr<Integrator> &intg : integrators_)
+        energy_ += intg->integrate(natoms_, delt_, x_, xm_, v_, f_);
+
+    for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
+        thermo->thermo(v_);
+
+    for(int i=0; i<natoms_; i++) x_[i] -= std::floor(x_[i] / box_) * box_;
+    step_++;
 }
 
 void MD::setup(){
@@ -95,20 +102,9 @@ void MD::setup(){
 
     thermostats_.push_back(make_unique<ThermostatVrescale>(1, 1));
 
-//    trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
+    trjOutputs_.push_back(make_unique<XTCOutput>(natoms_, "out.xtc"));
     trjOutputs_.push_back(make_unique<LammpsTrjOutput>(natoms_, "out.trj"));
-}
-
-void MD::integrate(){
-    for(const std::unique_ptr<Integrator> &intg : integrators_)
-        energy_ += intg->integrate(natoms_, delt_, x_, xm_, v_, f_);
-    for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
-        thermo->thermo(v_);
-    step_++;
-}
-
-void MD::PBC(){
-    for(int i=0; i<natoms_; i++) x_[i] -= std::floor(x_[i] / box_) * box_;
+    trjOutputs_[1]->writeFrame(x_, step_, box_);
 }
 
 void MD::print(int natoms) const{
@@ -121,5 +117,6 @@ void MD::print(int natoms) const{
 }
 
 void MD::output() const{
-    for(const std::unique_ptr<TrjOutput> &trj : trjOutputs_) trj->writeFrame(x_, step_, box_);
+//    for(const std::unique_ptr<TrjOutput> &trj : trjOutputs_) trj->writeFrame(x_, step_, box_);
+    trjOutputs_[0]->writeFrame(x_, step_, box_);
 }
