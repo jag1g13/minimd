@@ -22,10 +22,16 @@
 void MD::createAtoms(const int natoms, const double temp){
     natoms_ = natoms;
     temp_ = temp;
+
     x_.resize(natoms_);
     xm_.resize(natoms_);
     v_.resize(natoms_);
     f_.resize(natoms_);
+
+    xr_.resize(natoms_);
+    xmr_.resize(natoms_);
+    vr_.resize(natoms_);
+    fr_.resize(natoms_);
 
 //    std::random_device rd;
 //    std::default_random_engine dre(rd());
@@ -77,28 +83,41 @@ void MD::step(){
     energy_ = 0.;
     for(MyTypes::vec &each : f_) each = {0., 0., 0.};
 
+    // Calculate forces
     for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_)
         energy_ += nonbond->calcForces(x_, f_);
     for(const std::unique_ptr<BondLength> &bond : bondLengths_)
         energy_ += bond->calcForces(x_, f_);
 
-    for(const std::unique_ptr<Integrator> &intg : integrators_)
-        energy_ += intg->integrate(natoms_, delt_, x_, xm_, v_, f_);
+    // Integrate forces
+    for(const std::unique_ptr<Integrator> &intg : integrators_){
+        switch(intg->type_){
+            case MyEnums::IntegratorType::CARTESIAN:
+                energy_ += intg->integrate(x_, xm_, v_, f_);
+            case MyEnums::IntegratorType::ROTATIONAL:
+                energy_ += intg->integrate(xr_, xmr_, vr_, fr_);
+        }
+    }
 
+    // Do thermo/baro-stats
     for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
         thermo->thermo(v_);
 
+    // Correct for PBC
     for(int i=0; i<natoms_; i++) x_[i] -= std::floor(x_[i] / box_) * box_;
+
     step_++;
 }
 
 void MD::setup(){
 //    bondLengths_.push_back(make_unique<BondLengthHarmonic>(0, 1, 1, 10));
 
-    nonbonds_.push_back(make_unique<NonbondLJ>(natoms_, box_));
+    nonbonds_.push_back(make_unique<NonbondLJ>(natoms_, box_, 3));
 
-//    integrators_.push_back(make_unique<IntegratorVerlet>());
-    integrators_.push_back(make_unique<IntegratorLeapfrog>());
+//    integrators_.push_back(make_unique<IntegratorVerlet>(natoms_, delt_));
+    integrators_.push_back(make_unique<IntegratorLeapfrog>(natoms_, delt_));
+    integrators_.push_back(make_unique<IntegratorLeapfrog>(
+            natoms_, delt_, MyEnums::IntegratorType::ROTATIONAL));
 
     thermostats_.push_back(make_unique<ThermostatVrescale>(1, 1));
 

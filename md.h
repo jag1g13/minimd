@@ -25,6 +25,12 @@ private:
     MyTypes::vecList xm_;
     MyTypes::vecList v_;
     MyTypes::vecList f_;
+
+    MyTypes::vecList xr_;
+    MyTypes::vecList xmr_;
+    MyTypes::vecList vr_;
+    MyTypes::vecList fr_;
+
     double box_ = 10;
     int natoms_, step_ = 0;
     double temp_= 300.;

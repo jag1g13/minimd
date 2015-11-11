@@ -4,15 +4,14 @@
 
 #include "integrator-leapfrog.h"
 
-double IntegratorLeapfrog::integrate(const int natoms, const double delt,
-               MyTypes::vecList &x, MyTypes::vecList &xm,
-               MyTypes::vecList &v, const MyTypes::vecList &f) const{
+double IntegratorLeapfrog::integrate(MyTypes::vecList &x, MyTypes::vecList &xm,
+                                     MyTypes::vecList &v, const MyTypes::vecList &f) const{
     MyTypes::vec sumv  = {0., 0., 0.};
     MyTypes::vec sumv2 = {0., 0., 0.};
 
-    for(int i=0; i<natoms; i++){
-        v[i] += f[i] * delt;
-        xm[i] = x[i] + (v[i] * delt);
+    for(int i=0; i<natoms_; i++){
+        v[i] += f[i] * delt_;
+        xm[i] = x[i] + (v[i] * delt_);
         sumv += v[i];
         sumv2 += v[i] * v[i];
     }

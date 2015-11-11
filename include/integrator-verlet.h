@@ -9,9 +9,10 @@
 
 class IntegratorVerlet : public Integrator{
 public:
-    double integrate(const int natoms, const double delt,
-                   MyTypes::vecList &x, MyTypes::vecList &xm,
-                   MyTypes::vecList &v, const MyTypes::vecList &f) const;
+    IntegratorVerlet(const int natoms, const double delt)
+            : Integrator(natoms, delt, MyEnums::IntegratorType::CARTESIAN){}
+    double integrate(MyTypes::vecList &x, MyTypes::vecList &xm,
+                     MyTypes::vecList &v, const MyTypes::vecList &f) const;
 };
 
 #endif //MINIMD_INTEGRATOR_VERLET_H
