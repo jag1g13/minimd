@@ -31,7 +31,7 @@ private:
     MyTypes::vecList vr_;
     MyTypes::vecList fr_;
 
-    double box_ = 10;
+    double box_;
     int natoms_, step_ = 0;
     double temp_= 300.;
     double delt_ = 0.01;
@@ -39,6 +39,12 @@ private:
     double mass_ = 1.;
 
     double energy_;
+
+    void createVelocity(const double temp);
+
+public:
+    MD(const double box) : box_(box){};
+    ~MD(){};
 
     std::vector<std::unique_ptr<Integrator>> integrators_;
     std::vector<std::unique_ptr<Thermostat>> thermostats_;
@@ -48,15 +54,8 @@ private:
 
     std::vector<std::unique_ptr<TrjOutput>> trjOutputs_;
 
-    void createVelocity(const double temp);
-
-public:
-    MD(){};
-    ~MD(){};
-
-    void createAtoms(const int natoms, const double temp);
-
-    void setup();
+    void createAtoms(const int natoms, const double temp,
+                     const double bounda, const double boundb);
 
     void step();
 
