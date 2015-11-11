@@ -27,15 +27,10 @@ private:
     MyTypes::vecList f_;
     double box_ = 10;
     int natoms_, step_ = 0;
-    double en_;
     double temp_= 300.;
     double delt_ = 0.01;
 
-    double sigma_ = 5.;
-    double epsilon_ = 1.;
     double mass_ = 1.;
-    double cutoff_ = 10.;
-    double ecut_;
 
     double energy_;
 
@@ -67,12 +62,7 @@ public:
 
     void output() const;
 
-    double temp() const;
-
     void print(int natoms=-1) const;
-    double distSqr(const int i, const int j) const;
-
-    double energy() const {return energy_;};
 };
 
 template<typename T, typename... Args>

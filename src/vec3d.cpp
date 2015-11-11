@@ -6,14 +6,6 @@
 
 #include <cmath>
 
-//vec3d vec3d(const double x, const double y, const double z){
-//    vec3d vec;
-//    vec.x = x;
-//    vec.y = y;
-//    vec.z = z;
-//    return vec;
-//}
-
 vec3d operator+(const vec3d &a, const vec3d &b){
     return {a.x+b.x, a.y+b.y, a.z+b.z};
 }

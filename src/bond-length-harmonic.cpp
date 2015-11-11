@@ -8,12 +8,8 @@
 
 double BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const{
     MyTypes::vec del = x[atoms_[0]] - x[atoms_[1]];
-//    del[0] = x[atoms_[0]][0] - x[atoms_[1]][0];
-//    del[1] = x[atoms_[0]][1] - x[atoms_[1]][1];
-//    del[2] = x[atoms_[0]][2] - x[atoms_[1]][2];
 
     const double r = abs(del);
-//    const double r = std::sqrt(del[0]*del[0] + del[1]*del[1] + del[2]*del[2]);
     const double dr = r - equilibrium_;
     const double rk = forceConstant_ * dr;
 
@@ -25,13 +21,7 @@ double BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) 
     }
 
     f[atoms_[0]] += del * fbond;
-//    f[atoms_[0]][0] += del[0] * fbond;
-//    f[atoms_[0]][1] += del[1] * fbond;
-//    f[atoms_[0]][2] += del[2] * fbond;
     f[atoms_[1]] -= del * fbond;
-//    f[atoms_[1]][0] -= del[0] * fbond;
-//    f[atoms_[1]][1] -= del[1] * fbond;
-//    f[atoms_[1]][2] -= del[2] * fbond;
 
-    return 0.;
+    return rk * dr;
 }

@@ -13,7 +13,6 @@ typedef struct vec3d{
 } vec3d;
 
 namespace MyTypes{
-//    typedef std::array<double, 3> vec;
     typedef vec3d vec;
     typedef std::vector<vec> vecList;
 }

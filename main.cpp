@@ -21,13 +21,9 @@ int main() {
         dynamics.integrate();
         dynamics.PBC();
 
-        if(i%10 == 0){
-            dynamics.output();
-//            cout << dynamics.energy() << endl;
-        }
+        if(i%10 == 0) dynamics.output();
     }
     dynamics.print();
-    cout << dynamics.distSqr(0, 1) << endl;
 
     const double time = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
     printf("Took %5.3f seconds for %d steps\n%d steps per second\n",
