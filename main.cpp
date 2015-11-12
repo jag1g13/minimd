@@ -6,6 +6,7 @@
 #include "md.h"
 
 #include "bond-length-harmonic.h"
+#include "bond-angle-dipole.h"
 #include "nonbond-lj.h"
 #include "integrator-leapfrog.h"
 #include "integrator-leapfrog-rotation.h"
@@ -22,19 +23,20 @@ int main() {
 
     const int nequil = 1000;
     const int nprod = 5000;
-    const int natoms = 6;
+    const int natoms = 3;
     const double delt = 0.001;
     const double box = -10.;
     const double cutoff = -1.;
 
     MD dyn(box);
 
-    dyn.nonbonds_.push_back(make_unique<NonbondLJ>(natoms, box, cutoff));
+//    dyn.nonbonds_.push_back(make_unique<NonbondLJ>(natoms, box, cutoff));
 
     for(int i=0; i<natoms-2; i+=3){
         dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+1, 0.5, 100, box));
         dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+2, 0.5, 100, box));
         dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i+1, i+2, 0.5, 100, box));
+        dyn.bondAngles_.push_back(make_unique<BondAngleDipole>(i, i, i+1, 0, 100, box));
     }
 
     dyn.integrators_.push_back(make_unique<IntegratorLeapfrog>(natoms, delt));

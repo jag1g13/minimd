@@ -13,7 +13,7 @@ public:
     BondLengthHarmonic(const int a, const int b, const double eqm, const double fc, const double box)
                        : BondLength(a, b, eqm, fc, box){}
 
-    double calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const;
+    double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f) const;
 };
 
 #endif //MINIMD_BOND_HARMONIC_H

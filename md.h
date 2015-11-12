@@ -15,6 +15,7 @@
 #include "thermostat.h"
 
 #include "bond-length.h"
+#include "bond-angle.h"
 #include "nonbond.h"
 
 #include "trj_output.h"
@@ -50,6 +51,7 @@ public:
     std::vector<std::unique_ptr<Thermostat>> thermostats_;
 
     std::vector<std::unique_ptr<BondLength>> bondLengths_;
+    std::vector<std::unique_ptr<BondAngle>> bondAngles_;
     std::vector<std::unique_ptr<Nonbond>> nonbonds_;
 
     std::vector<std::unique_ptr<TrjOutput>> trjOutputs_;

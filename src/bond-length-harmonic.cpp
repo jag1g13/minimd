@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-double BondLengthHarmonic::calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const{
+double BondLengthHarmonic::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f) const{
     MyTypes::vec del = x[atoms_[0]] - x[atoms_[1]];
     if(box_ > 0.) del %= box_;
 
