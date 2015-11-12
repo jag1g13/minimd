@@ -46,6 +46,7 @@ int LammpsTrjOutput::writeFrame(const MyTypes::vecList &frame, const int num, co
                 0., 0., 0.,
                 1., 1.);
     }
+    fflush(file_);
 
     return 0;
 }

@@ -10,7 +10,9 @@
 class Bond{
 protected:
     const double equilibrium_, forceConstant_;
-    Bond(const double eqm, const double fc) : equilibrium_(eqm), forceConstant_(fc){};
+    const double box_;
+    Bond(const double eqm, const double fc, const double box)
+            : equilibrium_(eqm), forceConstant_(fc), box_(box){};
 public:
     virtual double calcForces(MyTypes::vecList &x, MyTypes::vecList &f) const = 0;
 

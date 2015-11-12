@@ -10,8 +10,8 @@
 class BondLength : public Bond{
 protected:
     const int atoms_[2];
-    BondLength(const int a, const int b, const double eqm, const double fc)
-               : Bond(eqm, fc), atoms_{a, b} {};
+    BondLength(const int a, const int b, const double eqm, const double fc, const double box)
+               : Bond(eqm, fc, box), atoms_{a, b} {};
 public:
 };
 
