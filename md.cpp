@@ -82,6 +82,10 @@ void MD::step(){
     for(const std::unique_ptr<BondLength> &bond : bondLengths_)
         pe_ += bond->calcForces(x_, f_);
 
+    //TODO make this work with normal angles too
+    for(const std::unique_ptr<BondAngle> &bond : bondAngles_)
+        pe_ += bond->calcTorques(x_, xr_, fr_);
+
     // Integrate forces
     for(const std::unique_ptr<Integrator> &intg : integrators_){
         switch(intg->type_){

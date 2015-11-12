@@ -29,7 +29,9 @@ set(SOURCE_FILES
         src/integrator-verlet.cpp
         src/thermostat-vrescale.cpp
         src/nonbond-lj.cpp
-        src/bond-length-harmonic.cpp)
+        src/bond-length-harmonic.cpp
+        src/bond-angle-dipole.cpp
+        )
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 add_executable(minimd ${SOURCE_FILES})
