@@ -38,7 +38,7 @@ private:
 
     double mass_ = 1.;
 
-    double energy_, pe_, ke_;
+    double energy_, pe_, ke_, cartke_, rotke_;
 
     void createVelocity(const double temp);
 

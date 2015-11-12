@@ -61,9 +61,10 @@ vec3d &operator/=(vec3d &vec, const double b){
     return vec;
 }
 vec3d &operator%=(vec3d &vec, const double b){
-    vec.x -= b * std::rint(vec.x / b);
-    vec.y -= b * std::rint(vec.y / b);
-    vec.z -= b * std::rint(vec.z / b);
+    const double binv = 1. / b;
+    vec.x -= b * std::rint(vec.x * binv);
+    vec.y -= b * std::rint(vec.y * binv);
+    vec.z -= b * std::rint(vec.z * binv);
     return vec;
 }
 
@@ -80,7 +81,7 @@ vec3d operator/(const vec3d &a, const double b){
     return {a.x/b, a.y/b, a.z/b};
 }
 
-double abs(const vec3d &vec){
+double vecabs(const vec3d &vec){
     return std::sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
 }
 

@@ -12,13 +12,13 @@ protected:
     const double refTemp_;
     const double coupling_;
 
-    Thermostat(const double temp, const double coup) : refTemp_(temp), coupling_(coup){};
+    Thermostat(const double temp, const double coup=1.) : refTemp_(temp), coupling_(coup){};
 
 public:
     double temperature(const MyTypes::vecList &v) const{
         MyTypes::vec sumv2 = {0., 0., 0.};
         for(const MyTypes::vec &velo : v) sumv2 += velo * velo;
-        return abs(sumv2) / (3 * v.size());
+        return vecabs(sumv2) / (3 * v.size());
     }
 
     virtual double thermo(MyTypes::vecList &v) = 0;

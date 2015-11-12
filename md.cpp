@@ -60,7 +60,7 @@ void MD::createVelocity(const double temp){
     sumv /= natoms_;
     sumv2 /= natoms_;
 
-    const double scale = std::sqrt(3*temp_ / abs(sumv2));
+    const double scale = std::sqrt(3*temp_ / vecabs(sumv2));
 
     for(int i=0; i < natoms_; i++){
         v_[i] = (v_[i] - sumv) * scale;
@@ -68,7 +68,7 @@ void MD::createVelocity(const double temp){
 }
 
 void MD::step(){
-    energy_ = 0.; pe_ = 0.; ke_ = 0.;
+    energy_ = 0.; pe_ = 0.; ke_ = 0.; cartke_ = 0.; rotke_ = 0.;
     for(MyTypes::vec &each : f_) each = {0., 0., 0.};
 
     // Calculate forces
@@ -81,9 +81,9 @@ void MD::step(){
     for(const std::unique_ptr<Integrator> &intg : integrators_){
         switch(intg->type_){
             case MyEnums::IntegratorType::CARTESIAN:
-                ke_ += intg->integrate(x_, xm_, v_, f_);
+                cartke_ += intg->integrate(x_, xm_, v_, f_);
             case MyEnums::IntegratorType::ROTATIONAL:
-                ke_ += intg->integrate(xr_, xmr_, vr_, fr_);
+                rotke_ += intg->integrate(xr_, xmr_, vr_, fr_);
         }
     }
 

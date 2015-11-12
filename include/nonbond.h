@@ -19,7 +19,7 @@ protected:
     double distSqr(const MyTypes::vec &a, const MyTypes::vec &b) const{
         MyTypes::vec del = a - b;
         del %= box_;
-        return abs(del);
+        return vecabs(del);
     };
 
 public:

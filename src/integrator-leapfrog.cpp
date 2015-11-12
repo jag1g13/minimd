@@ -16,5 +16,5 @@ double IntegratorLeapfrog::integrate(MyTypes::vecList &x, MyTypes::vecList &xm,
         sumv2 += v[i] * v[i];
     }
     std::swap(x, xm);
-    return -0.5 * abs(sumv2);
+    return -0.5 * vecabs(sumv2);
 }

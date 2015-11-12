@@ -10,7 +10,7 @@
 class ThermostatVrescale : public Thermostat{
 protected:
 public:
-    ThermostatVrescale(const double temp, const double coup) : Thermostat(temp, coup){};
+    ThermostatVrescale(const double temp, const double coup=1.) : Thermostat(temp, coup){};
 
     double thermo(MyTypes::vecList &v);
 };
