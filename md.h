@@ -36,11 +36,11 @@ private:
     double temp_= 300.;
     double delt_ = 0.01;
 
-    double mass_ = 1.;
-
     double energy_, pe_, ke_, cartke_, rotke_;
 
     void createVelocity(const double temp);
+
+    void pbc();
 
 public:
     MD(const double box) : box_(box){};
@@ -66,6 +66,8 @@ public:
     double energy() const{return energy_;};
     double pe() const{return pe_;};
     double ke() const{return ke_;};
+    double cartke() const{return cartke_;};
+    double rotke() const{return rotke_;};
 };
 
 template<typename T, typename... Args>

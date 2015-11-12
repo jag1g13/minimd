@@ -81,8 +81,22 @@ vec3d operator/(const vec3d &a, const double b){
     return {a.x/b, a.y/b, a.z/b};
 }
 
+void normalize(vec3d &vec){
+    vec /= vecabs(vec);
+}
+
 double vecabs(const vec3d &vec){
     return std::sqrt(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
+}
+
+double dot(const vec3d &a, const vec3d &b){
+    return a.x*b.x + a.y*b.y + a.z*b.z;
+}
+
+vec3d cross(const vec3d &a, const vec3d &b){
+    return {a.y*b.z - a.z*b.y,
+            a.z*b.x - a.x*b.z,
+            a.x*b.y - a.y*b.x};
 }
 
 vec3d std::floor(const vec3d &vec){

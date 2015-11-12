@@ -23,7 +23,11 @@ public:
     ~LammpsTrjOutput();
 
     /** \brief Write a Frame to output file. */
-    int writeFrame(const MyTypes::vecList &frame, const int num, const double box);
+    int writeFrame(const MyTypes::vecList &frame, const MyTypes::vecList &dip,
+                   const int num, const double box);
+
+    int writeFrame(const MyTypes::vecList &frame,
+                   const int num, const double box);
 
     friend class Frame;
 };

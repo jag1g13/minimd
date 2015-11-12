@@ -41,7 +41,10 @@ vec3d operator-(const vec3d &a, const double b);
 vec3d operator*(const vec3d &a, const double b);
 vec3d operator/(const vec3d &a, const double b);
 
+void normalize(vec3d &vec);
 double vecabs(const vec3d &vec);
+double dot(const vec3d &a, const vec3d &b);
+vec3d cross(const vec3d &a, const vec3d &b);
 
 namespace std{
     vec3d floor(const vec3d &vec);

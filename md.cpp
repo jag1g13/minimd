@@ -6,6 +6,7 @@
 
 #include <cmath>
 #include <random>
+#include <iostream>
 
 void MD::createAtoms(const int natoms, const double temp,
                      const double bounda, const double boundb){
@@ -31,17 +32,20 @@ void MD::createAtoms(const int natoms, const double temp,
         x_[i] = {rand(dre), rand(dre), rand(dre)};
         x_[i] *= (boundb - bounda);
         x_[i] += bounda;
+        xr_[i] = {1., 0., 0.};
     }
 
     if(temp != 0.){
         createVelocity(temp);
+        for(int i=0; i < natoms_; i++) xm_[i] = x_[i] - (v_[i] * delt_);
     }else{
-        for(int i=0; i < natoms_; i++) v_[i] = {0., 0., 0.};
+        for(int i=0; i < natoms_; i++){
+            v_[i] = {0., 0., 0.};
+            xm_[i] = x_[i];
+        }
     }
 
-    for(int i=0; i < natoms_; i++) xm_[i] = x_[i] - (v_[i] * delt_);
-
-    if(trjOutputs_.size() > 1) trjOutputs_[1]->writeFrame(x_, 0, box_);
+    if(trjOutputs_.size() > 1) trjOutputs_[1]->writeFrame(x_, xr_, 0, abs(box_));
 }
 
 void MD::createVelocity(const double temp){
@@ -70,6 +74,7 @@ void MD::createVelocity(const double temp){
 void MD::step(){
     energy_ = 0.; pe_ = 0.; ke_ = 0.; cartke_ = 0.; rotke_ = 0.;
     for(MyTypes::vec &each : f_) each = {0., 0., 0.};
+    for(MyTypes::vec &each : fr_) each = {0., 0., 0.};
 
     // Calculate forces
     for(const std::unique_ptr<Nonbond> &nonbond : nonbonds_)
@@ -82,20 +87,27 @@ void MD::step(){
         switch(intg->type_){
             case MyEnums::IntegratorType::CARTESIAN:
                 cartke_ += intg->integrate(x_, xm_, v_, f_);
+                break;
             case MyEnums::IntegratorType::ROTATIONAL:
                 rotke_ += intg->integrate(xr_, xmr_, vr_, fr_);
+                break;
         }
     }
-
-//    printf("%8i %8.3f %8.3f %8.3f\n", step_, f_[0].x, f_[0].y, f_[0].z);
+    ke_ = cartke_ + rotke_;
 
     // Do thermo/baro-stats
     for(const std::unique_ptr<Thermostat> &thermo : thermostats_)
         thermo->thermo(v_);
 
     // Correct for PBC
-    for(int i=0; i<natoms_; i++){
-//        x_[i] -= std::floor(x_[i] / box_) * box_;
+    if(box_ > 0.) pbc();
+
+    energy_ = pe_ + ke_;
+    step_++;
+}
+
+void MD::pbc(){
+    for(int i = 0; i < natoms_; i++){
         while(x_[i].x < 0){
             x_[i].x += box_;
             xm_[i].x += box_;
@@ -123,9 +135,6 @@ void MD::step(){
             xm_[i].z -= box_;
         }
     }
-
-    energy_ = pe_ + ke_;
-    step_++;
 }
 
 void MD::print(int natoms) const{
@@ -139,5 +148,6 @@ void MD::print(int natoms) const{
 
 void MD::output() const{
 //    for(const std::unique_ptr<TrjOutput> &trj : trjOutputs_) trj->writeFrame(x_, step_, box_);
-    trjOutputs_[0]->writeFrame(x_, step_, box_);
+    trjOutputs_[0]->writeFrame(x_, step_, abs(box_));
+    trjOutputs_[1]->writeFrame(x_, xr_, step_, abs(box_));
 }

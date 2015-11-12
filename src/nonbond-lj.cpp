@@ -26,7 +26,7 @@ double NonbondLJ::calcForces(const MyTypes::vecList &x, MyTypes::vecList &f){
                 double r6i = r2i * r2i * r2i * sig6;
                 double ff = 48 * epsilon_ * r2i * r6i * (r6i - 0.5);
                 MyTypes::vec del = x[i] - x[j];
-                del %= box_;
+                if(box_ > 0.) del %= box_;
                 del *= ff;
                 f[i] += del;
                 f[j] -= del;

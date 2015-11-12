@@ -25,6 +25,7 @@ set(SOURCE_FILES
         src/XTCOutput.cpp
         src/LammpsTrjOutput.cpp
         src/integrator-leapfrog.cpp
+        src/integrator-leapfrog-rotation.cpp
         src/integrator-verlet.cpp
         src/thermostat-vrescale.cpp
         src/nonbond-lj.cpp

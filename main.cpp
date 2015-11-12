@@ -8,6 +8,7 @@
 #include "bond-length-harmonic.h"
 #include "nonbond-lj.h"
 #include "integrator-leapfrog.h"
+#include "integrator-leapfrog-rotation.h"
 #include "integrator-verlet.h"
 #include "thermostat-vrescale.h"
 #include "XTCOutput.h"
@@ -20,62 +21,52 @@ int main() {
     const std::clock_t start = std::clock();
 
     const int nequil = 1000;
-    const int nprod = 1000;
-    const int natoms = 1000;
+    const int nprod = 5000;
+    const int natoms = 6;
     const double delt = 0.001;
-    const double box = 10.;
-    const double cutoff = 3.;
+    const double box = -10.;
+    const double cutoff = -1.;
 
-    MD dynamics(box);
+    MD dyn(box);
 
-    dynamics.nonbonds_.push_back(make_unique<NonbondLJ>(natoms, box, cutoff));
+    dyn.nonbonds_.push_back(make_unique<NonbondLJ>(natoms, box, cutoff));
 
-//    std::default_random_engine dre(0);
-//    std::uniform_real_distribution<double> rand(0, 1);
-//    for(int i=0; i<natoms; i++){
-//        const int a = rand(dre);
-//        const int b = rand(dre);
-//        dynamics.bondLengths_.push_back(make_unique<BondLengthHarmonic>(a, b, 0.5, 100));
-//    }
-
-    for(int i=0; i<natoms-3; i+=3){
-        dynamics.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+1, 0.5, 100, box));
-        dynamics.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+2, 0.5, 100, box));
-        dynamics.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i+1, i+2, 0.5, 100, box));
+    for(int i=0; i<natoms-2; i+=3){
+        dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+1, 0.5, 100, box));
+        dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i, i+2, 0.5, 100, box));
+        dyn.bondLengths_.push_back(make_unique<BondLengthHarmonic>(i+1, i+2, 0.5, 100, box));
     }
 
-//    integrators_.push_back(make_unique<IntegratorVerlet>(natoms, delt_));
-    dynamics.integrators_.push_back(make_unique<IntegratorLeapfrog>(natoms, delt));
-//    dynamics.integrators_.push_back(make_unique<IntegratorLeapfrog>(
-//            natoms, delt, MyEnums::IntegratorType::ROTATIONAL));
+    dyn.integrators_.push_back(make_unique<IntegratorLeapfrog>(natoms, delt));
+    dyn.integrators_.push_back(make_unique<IntegratorLeapfrogRotation>(natoms, delt));
 
-    dynamics.thermostats_.push_back(make_unique<ThermostatVrescale>(2));
+    dyn.thermostats_.push_back(make_unique<ThermostatVrescale>(5));
 
-    dynamics.trjOutputs_.push_back(make_unique<XTCOutput>(natoms, "out.xtc"));
-    dynamics.trjOutputs_.push_back(make_unique<LammpsTrjOutput>(natoms, "out.trj"));
+    dyn.trjOutputs_.push_back(make_unique<XTCOutput>(natoms, "out.xtc"));
+    dyn.trjOutputs_.push_back(make_unique<LammpsTrjOutput>(natoms, "out.trj"));
 
-    dynamics.createAtoms(natoms, 0, 0, 10);
+    dyn.createAtoms(natoms, 0, 0, 10);
 
     std::ofstream energyFile("energy.dat");
+    energyFile << "step total pe ke cartke rotke" << endl;
 
     for(int i=0; i<nequil; i++){
-        dynamics.step();
-        if(i%1 == 0) dynamics.output();
-        if(i%(nequil/100) == 0) cout << (100*i)/nequil << "%\r" << std::flush;
-//        energyFile << i << " " << dynamics.energy() << " " << dynamics.pe() << " " << dynamics.ke() << endl;
+        dyn.step();
+        if(i%1 == 0) dyn.output();
+        if((100*i)%nequil == 0) cout << (100*i)/nequil << "%\r" << std::flush;
     }
     cout << "Finished equilibration" << endl;
 
-    dynamics.thermostats_.pop_back();
+    dyn.thermostats_.pop_back();
 
     for(int i=0; i<nprod; i++){
-        dynamics.step();
-        if(i%1 == 0) dynamics.output();
+        dyn.step();
+        if(i%1 == 0) dyn.output();
         if(i%(nprod/100) == 0) cout << (100*i)/nprod << "%\r" << std::flush;
-        energyFile << i+nequil << " " << dynamics.energy() << " " << dynamics.pe() << " " << dynamics.ke() << endl;
+        energyFile << i << " " << dyn.energy() << " " << dyn.pe() << " " << dyn.ke() << " "
+                   << dyn.cartke() << " " << dyn.rotke() << endl;
     }
-    cout << endl;
-//    dynamics.print();
+    cout << "Finished simulation" << endl;
 
     const double time = (std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC);
     printf("Took %5.3f seconds for %d steps\n%d steps per second\n",

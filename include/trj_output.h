@@ -25,6 +25,11 @@ public:
     /** \brief Write a Frame to output file.  Pure virtual function. */
     virtual int writeFrame(const MyTypes::vecList &frame, const int num, const double box) = 0;
 
+    virtual int writeFrame(const MyTypes::vecList &frame, const MyTypes::vecList &dip,
+                           const int num, const double box){
+        throw std::runtime_error("Method not implemented: writeFrame");
+    };
+
     /** \brief Empty destructor to be overwritten. */
     virtual ~TrjOutput(){};
 };
