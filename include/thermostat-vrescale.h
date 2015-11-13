@@ -13,6 +13,8 @@ public:
     ThermostatVrescale(const double temp, const double coup=1.) : Thermostat(temp, coup){};
 
     double thermo(MyTypes::vecList &v);
+
+    double thermo(MyTypes::vecList &v, MyTypes::vecList &vr);
 };
 
 #endif //MINIMD_THERMOSTAT_VRESCALE_H
