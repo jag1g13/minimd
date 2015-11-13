@@ -24,6 +24,8 @@ protected:
 
 public:
     virtual double calcForces(const MyTypes::vecList &x, MyTypes::vecList &f) = 0;
+    virtual double calcForces(const MyTypes::vecList &x, const MyTypes::vecList &xr,
+                              MyTypes::vecList &f, MyTypes::vecList &fr) = 0;
 };
 
 #endif //MINIMD_NONBOND_H

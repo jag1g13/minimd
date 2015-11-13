@@ -22,6 +22,10 @@ public:
     }
 
     virtual double thermo(MyTypes::vecList &v) = 0;
+
+    virtual double thermo(MyTypes::vecList &v, MyTypes::vecList &vr){
+        throw std::runtime_error("Function not implemented: thermo");
+    }
 };
 
 #endif //MINIMD_THERMOSTAT_H

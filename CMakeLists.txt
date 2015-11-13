@@ -28,7 +28,8 @@ set(SOURCE_FILES
         src/integrator-leapfrog-rotation.cpp
         src/integrator-verlet.cpp
         src/thermostat-vrescale.cpp
-        src/nonbond-lj.cpp
+        src/nonbond-cartesian-lj.cpp
+        src/nonbond-rotation-dipole.cpp
         src/bond-length-harmonic.cpp
         src/bond-angle-dipole.cpp
         )
